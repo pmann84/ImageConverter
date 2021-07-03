@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="8.0.1" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
 </Project>

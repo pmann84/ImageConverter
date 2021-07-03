@@ -1,18 +1,29 @@
 ﻿using ImageMagick;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageConverterLib
 {
    public class ImageConverter
    {
+      ILogger _logger;
 
-      private static async Task ConvertImageAsync(ImageConversionOptions opts)
+      public ImageConverter(ILogger logger)
       {
+         _logger = logger;
+      }
+
+      private async Task ConvertImageAsync(ImageConversionOptions opts)
+      {
+         _logger.Information($"Starting conversion of [{opts.ImagePath}]...");
          using (MemoryStream stream = new MemoryStream())
          {
             using (MagickImage image = new MagickImage(opts.ImagePath))
@@ -25,57 +36,62 @@ namespace ImageConverterLib
                await converted.WriteAsync(opts.OutputImagePath);
             }
          }
+         _logger.Information($"Conversion complete. [{opts.ImagePath}] -> [{opts.OutputImagePath}]");
       }
 
-      public static async Task<int> ConvertAsync(ImageConversionOptions imageToConvert)
+      public async Task<int> ConvertAsync(ImageConversionOptions imageToConvert)
       {
          // Check imagePath actually exists!
          if (!imageToConvert.IsValid())
          {
-            Console.WriteLine($"Image [{imageToConvert.ImagePath}] does not exist!");
+            _logger.Error($"Image [{imageToConvert.ImagePath}] does not exist!");
             return 1;
          }
 
          // Read input
          try
          {
+            var watch = Stopwatch.StartNew();
             await ConvertImageAsync(imageToConvert);
+            watch.Stop();
+            var elapsedSeconds = watch.ElapsedMilliseconds / 1000.0;
+            _logger.Information($"Image {imageToConvert.ImagePath} converted in {elapsedSeconds}s");
          }
          catch (Exception e)
          {
-            Console.WriteLine($"Could not convert image [{imageToConvert.ImagePath}]: {e.Message}");
+            _logger.Error($"Could not convert image [{imageToConvert.ImagePath}]: {e.Message}");
             return 1;
          }
          return 0;
       }
 
-      //public static async Task ConvertAsync(IEnumerable<ImageConversionOptions> images)
-      //{
-         //int maxConcurrency=10;
-         //var messages = new List<string>();
-         //using(SemaphoreSlim concurrencySemaphore = new SemaphoreSlim(maxConcurrency))
-         //{
-         //    List<Task> tasks = new List<Task>();
-         //    foreach(var msg in messages)
-         //    {
-         //        concurrencySemaphore.Wait();
-         //        var t = Task.Factory.StartNew(() =>
-         //        {
-         //            try
-         //            {
-         //                 Process(msg);
-         //            }
-         //            finally
-         //            {
-         //                concurrencySemaphore.Release();
-         //            }
-         //        });
+      public async Task<IEnumerable<int>> ConvertAsync(IEnumerable<ImageConversionOptions> images, int maxConcurrency = 2)
+      {
+         using (SemaphoreSlim concurrencySemaphore = new SemaphoreSlim(maxConcurrency))
+         {
+            var tasks = new List<Task<int>>();
+            foreach (var image in images)
+            {
+               _logger.Information($"Waiting to start conversion for image [{image.ImagePath}]");
+               concurrencySemaphore.Wait();
+               var t = Task.Run(() => 
+               {
+                  try
+                  {
+                     return ConvertAsync(image);
+                  }
+                  finally
+                  {
+                     concurrencySemaphore.Release();
+                  }
+               });
 
-         //        tasks.Add(t);
-         //    }
+               tasks.Add(t);
+            }
 
-         //    Task.WaitAll(tasks.ToArray());
-         //}
-      //}
+            var results = await Task.WhenAll(tasks.ToArray());
+            return results;
+         }
+      }
    }
 }
