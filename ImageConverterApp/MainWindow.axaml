@@ -4,22 +4,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ImageConverterApp.MainWindow"
-        Title="ImageConverterApp">
+        Title="Image Converter">
 
-  <Grid>
+  <Grid DragDrop.AllowDrop="True">
       <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Button Click="OnConvertBtnClicked"
-              Margin="10,10,10,10"
-              VerticalAlignment="Center" 
-              HorizontalAlignment="Right">Convert</Button>
-      <DataGrid Grid.Row="1" AutoGenerateColumns="True"
+      <StackPanel Margin="10,10,10,10" 
+                  HorizontalAlignment="Right" 
+                  Orientation="Horizontal" 
+                  Grid.Row="1">
+        <Button Click="OnAddBtnClicked"
+                Margin="0,0,10,0"
+                FontSize="12.0">Add Image</Button>
+        <Button Click="OnConvertBtnClicked"
+                FontSize="12.0">Convert</Button>
+      </StackPanel>
+      <DataGrid Grid.Row="2" 
+                AutoGenerateColumns="False"
                 Name="ImageConversionGrid"
                 Margin="10,0,10,10"
                 IsReadOnly="True"
                 VerticalScrollBarVisibility="Auto"
-                Items="{Binding ImageConversions}"></DataGrid>
+                Items="{Binding ImageConversions}">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Input Path" Binding="{Binding InputPath}"/>
+        </DataGrid.Columns>
+      </DataGrid>
   </Grid>
 </Window>

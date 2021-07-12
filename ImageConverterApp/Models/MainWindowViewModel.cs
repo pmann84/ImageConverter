@@ -8,38 +8,19 @@ namespace ImageConverterApp.Models
    {
       public ObservableCollection<ImageConversion> ImageConversions { get; }
 
-      private string _infoText;
-      public string InfoText
-      {
-         get { return _infoText; }
-         set
-         {
-            if (value != _infoText)
-            {
-               _infoText = value;
-               OnPropertyChanged();
-            }
-         }
-      }
-
       public MainWindowViewModel()
       {
-         ImageConversions = new ObservableCollection<ImageConversion>(GenerateTestConversions());
+         ImageConversions = new ObservableCollection<ImageConversion>();
       }
 
-      private IEnumerable<ImageConversion> GenerateTestConversions()
+      public void AddImageToConvert(ImageConversion conversion)
       {
-         int numConversions = 30;
+         ImageConversions.Add(conversion);
+      }
 
-         var testConversions = new List<ImageConversion>();
-         for (var i = 0; i < numConversions; i++)
-         {
-            testConversions.Add(new ImageConversion()
-            {
-               InputPath = $"C:\\Projects\\ImageConverter\\TestData\\IMG_{i}.HEIC"
-            });
-         }
-         return testConversions;
+      public bool CanAddImage(ImageConversion conversion)
+      {
+         return !ImageConversions.Contains(conversion);
       }
    }
 }

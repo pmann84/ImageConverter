@@ -10,4 +10,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.6" />
    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageConverter\ImageConverterLib.csproj" />
+  </ItemGroup>
 </Project>
