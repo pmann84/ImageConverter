@@ -1,10 +1,7 @@
 ﻿using CommandLine;
 using ImageConverterLib;
-using ImageMagick;
 using Serilog;
-using Serilog.Formatting.Display;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,8 +27,8 @@ namespace ImageConverterCLI
             .MapResult(async (CommandLineOptions opts) =>
             {
                logger.Information($"Read arguments: {opts}");
-               List<MagickFormat> SupportedFormats = new List<MagickFormat> { MagickFormat.Jpg, MagickFormat.Jpeg, MagickFormat.Heic, MagickFormat.Heif };
-               if (!SupportedFormats.Contains(opts.OutputFormat))
+              
+               if (!ImageConverter.SupportedFormats.Contains(opts.OutputFormat))
                {
                   logger.Error("Error! Invalid Image format");
                   return -1; // Unhandled error

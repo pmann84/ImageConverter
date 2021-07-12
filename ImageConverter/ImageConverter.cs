@@ -14,7 +14,10 @@ namespace ImageConverterLib
 {
    public class ImageConverter
    {
-      ILogger _logger;
+      private static List<MagickFormat> _supportedFormats = new List<MagickFormat> { MagickFormat.Jpg, MagickFormat.Jpeg, MagickFormat.Heic, MagickFormat.Heif };
+      public static List<MagickFormat> SupportedFormats { get => _supportedFormats; }
+
+      private ILogger _logger;
 
       public ImageConverter(ILogger logger)
       {

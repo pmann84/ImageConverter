@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageConverterLib", "ImageConverter\ImageConverterLib.csproj", "{3BA001B1-54BD-4C7D-86B7-DF1AD9A5BA44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageConverterCLI", "ImageConverterCLI\ImageConverterCLI.csproj", "{0479B6BC-8DFF-4533-80C6-76DA6DCF391E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageConverterCLI", "ImageConverterCLI\ImageConverterCLI.csproj", "{0479B6BC-8DFF-4533-80C6-76DA6DCF391E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageConverterApp", "ImageConverterApp\ImageConverterApp.csproj", "{30BCC798-4797-4B36-B4C6-32625E2A990F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0479B6BC-8DFF-4533-80C6-76DA6DCF391E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0479B6BC-8DFF-4533-80C6-76DA6DCF391E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0479B6BC-8DFF-4533-80C6-76DA6DCF391E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30BCC798-4797-4B36-B4C6-32625E2A990F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30BCC798-4797-4B36-B4C6-32625E2A990F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30BCC798-4797-4B36-B4C6-32625E2A990F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30BCC798-4797-4B36-B4C6-32625E2A990F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
