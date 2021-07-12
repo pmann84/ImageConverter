@@ -42,13 +42,13 @@ namespace ImageConverterLib
          _logger.Information($"Conversion complete. [{opts.ImagePath}] -> [{opts.OutputImagePath}]");
       }
 
-      public async Task<int> ConvertAsync(ImageConversionOptions imageToConvert)
+      public async Task<ImageConversionResults> ConvertAsync(ImageConversionOptions imageToConvert)
       {
          // Check imagePath actually exists!
          if (!imageToConvert.IsValid())
          {
             _logger.Error($"Image [{imageToConvert.ImagePath}] does not exist!");
-            return 1;
+            return new ImageConversionResults(imageToConvert, false, TimeSpan.Zero);
          }
 
          // Read input
@@ -59,20 +59,20 @@ namespace ImageConverterLib
             watch.Stop();
             var elapsedSeconds = watch.ElapsedMilliseconds / 1000.0;
             _logger.Information($"Image {imageToConvert.ImagePath} converted in {elapsedSeconds}s");
+            return new ImageConversionResults(imageToConvert, true, TimeSpan.FromMilliseconds(watch.ElapsedMilliseconds));
          }
          catch (Exception e)
          {
             _logger.Error($"Could not convert image [{imageToConvert.ImagePath}]: {e.Message}");
-            return 1;
+            return new ImageConversionResults(imageToConvert, false, TimeSpan.Zero);
          }
-         return 0;
       }
 
-      public async Task<IEnumerable<int>> ConvertAsync(IEnumerable<ImageConversionOptions> images, int maxConcurrency = 2)
+      public async Task<IEnumerable<ImageConversionResults>> ConvertAsync(IEnumerable<ImageConversionOptions> images, int maxConcurrency = 2)
       {
          using (SemaphoreSlim concurrencySemaphore = new SemaphoreSlim(maxConcurrency))
          {
-            var tasks = new List<Task<int>>();
+            var tasks = new List<Task<ImageConversionResults>>();
             foreach (var image in images)
             {
                _logger.Information($"Waiting to start conversion for image [{image.ImagePath}]");

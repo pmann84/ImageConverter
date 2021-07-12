@@ -35,26 +35,22 @@ namespace ImageConverterCLI
                }
                try
                {
-                  var watch = Stopwatch.StartNew();
                   // We have the parsed arguments, so let's just pass them down
                   var imageConversionOpts = opts.ToImageConversion();
                   if (imageConversionOpts.Count() == 1)
                   {
                      var result = await imageConverter.ConvertAsync(imageConversionOpts.Single());
-                     var successCount = result == 0 ? 1 : 0;
-                     var failedCount = result == 1 ? 1 : 0;
-                     watch.Stop();
-                     var elapsedSeconds = watch.ElapsedMilliseconds / 1000.0;
-                     logger.Information($"Finished converting 1 image in {elapsedSeconds}s ({elapsedSeconds}s/image). {successCount} succeeded, {failedCount} failed.");
-                     return result;
+                     var successCount = result.Succeeded ? 1 : 0;
+                     var failedCount = !result.Succeeded ? 1 : 0;
+                     logger.Information($"Finished converting 1 image in {result.TimeTaken.TotalSeconds}s ({result.TimeTaken.TotalSeconds}s/image). {successCount} succeeded, {failedCount} failed.");
+                     return result.Succeeded ? 0 : 1;
                   }
                   else
                   {
                      var results = await imageConverter.ConvertAsync(imageConversionOpts, opts.MaxConcurrency);
-                     watch.Stop();
-                     var elapsedSeconds = watch.ElapsedMilliseconds / 1000.0;
-                     logger.Information($"Finished converting {results.Count()} images in {elapsedSeconds}s ({elapsedSeconds/results.Count()}s/image). {results.Count(r => r == 0)} succeeded, {results.Count(r => r == 1)} failed.");
-                     return results.Max();
+                     var totalTimeTaken = TimeSpan.FromTicks(results.Sum(r => r.TimeTaken.Ticks));
+                     logger.Information($"Finished converting {results.Count()} images in {totalTimeTaken.TotalSeconds}s ({totalTimeTaken.TotalSeconds / results.Count()}s/image). {results.Count(r => r.Succeeded)} succeeded, {results.Count(r => !r.Succeeded)} failed.");
+                     return results.Any(r => r.Succeeded == false) ? 1 : 0;
                   }
                }
                catch (Exception e)
