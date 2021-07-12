@@ -8,7 +8,7 @@ namespace ImageConverterLib
 {
    public class ImageConversionOptions
    {
-      public string ImagePath { get; set; }
+      public string ImagePath { get; set; } = null!;
       public MagickFormat DestinationFormat { get; set; }
       public string? OutputDirectory { get; set; }
 
