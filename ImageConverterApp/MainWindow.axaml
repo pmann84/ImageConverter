@@ -6,12 +6,20 @@
         x:Class="ImageConverterApp.MainWindow"
         Title="ImageConverterApp">
 
-  <StackPanel Orientation="Vertical" Margin="10">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-      <Button Click="OnConvertBtnClicked">Convert</Button>
-    </StackPanel>
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-      <TextBlock Text="{Binding InfoText}" />
-    </StackPanel>
-  </StackPanel>
+  <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Button Click="OnConvertBtnClicked"
+              Margin="10,10,10,10"
+              VerticalAlignment="Center" 
+              HorizontalAlignment="Right">Convert</Button>
+      <DataGrid Grid.Row="1" AutoGenerateColumns="True"
+                Name="ImageConversionGrid"
+                Margin="10,0,10,10"
+                IsReadOnly="True"
+                VerticalScrollBarVisibility="Auto"
+                Items="{Binding ImageConversions}"></DataGrid>
+  </Grid>
 </Window>

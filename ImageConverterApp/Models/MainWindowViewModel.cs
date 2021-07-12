@@ -1,10 +1,13 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ImageConverterApp.Models
 {
-   class MainWindowViewModel : INotifyPropertyChanged
+   class MainWindowViewModel : ViewModelBase
    {
+      public ObservableCollection<ImageConversion> ImageConversions { get; }
+
       private string _infoText;
       public string InfoText
       {
@@ -19,23 +22,24 @@ namespace ImageConverterApp.Models
          }
       }
 
-      public event PropertyChangedEventHandler? PropertyChanged;
-
-      // Move this to a base class
-      //protected bool RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-      //{
-      //   if (!EqualityComparer<T>.Default.Equals(field, value))
-      //   {
-      //      field = value;
-      //      RaisePropertyChanged(propertyName);
-      //      return true;
-      //   }
-      //   return false;
-      //}
-
-      protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+      public MainWindowViewModel()
       {
-         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+         ImageConversions = new ObservableCollection<ImageConversion>(GenerateTestConversions());
+      }
+
+      private IEnumerable<ImageConversion> GenerateTestConversions()
+      {
+         int numConversions = 30;
+
+         var testConversions = new List<ImageConversion>();
+         for (var i = 0; i < numConversions; i++)
+         {
+            testConversions.Add(new ImageConversion()
+            {
+               InputPath = $"C:\\Projects\\ImageConverter\\TestData\\IMG_{i}.HEIC"
+            });
+         }
+         return testConversions;
       }
    }
 }
