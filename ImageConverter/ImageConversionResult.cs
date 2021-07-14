@@ -6,12 +6,12 @@ using System.Text;
 
 namespace ImageConverterLib
 {
-   public class ImageConversionResults
+   public class ImageConversionResult
    {
-      public ImageConversionResults(ImageConversionOptions opts, bool succeeded, TimeSpan timeTaken)
+      public ImageConversionResult(ImageConversionOptions opts, bool succeeded, TimeSpan timeTaken)
       {
          InputImage = opts.ImagePath;
-         InputFormat = (MagickFormat) Enum.Parse(typeof(MagickFormat), Path.GetExtension(InputImage));
+         InputFormat = (MagickFormat) Enum.Parse(typeof(MagickFormat), Path.GetExtension(InputImage).Replace(".", ""), true);
          OutputImage = opts.OutputImagePath;
          OutputFormat = opts.DestinationFormat;
          Succeeded = succeeded;

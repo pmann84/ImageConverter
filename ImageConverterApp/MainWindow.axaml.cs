@@ -15,7 +15,7 @@ namespace ImageConverterApp
    public partial class MainWindow : Window
    {
       private readonly ImageConverter _imageConverter;
-      private Task<IEnumerable<ImageConversionResults>> _conversionTasks;
+      private Task<IEnumerable<ImageConversionResults>>? _conversionTasks;
 
       public MainWindow()
       {
@@ -50,8 +50,11 @@ namespace ImageConverterApp
       public void OnConvertBtnClicked(object sender, RoutedEventArgs args)
       {
          // TODO: Check if there are tasks that are running first, if all complete then check we arent re running it
+         if (_conversionTasks.IsCompleted)
          var context = GetWindowViewModel();
          var conversions = context.ImageConversions.Select(c => c.ToImageConversionOption()).ToList();
+         // Start progress spinners - https://stackoverflow.com/questions/48544635/wpf-how-can-i-display-a-column-in-a-datagrid-with-animated-gif-and-normal-png
+         // Convert!
          _conversionTasks = _imageConverter.ConvertAsync(conversions, 4);
       }
 
@@ -63,7 +66,7 @@ namespace ImageConverterApp
       public void OnDrop(object? sender, DragEventArgs e)
       {
          var files = e.Data.GetFileNames();
-         // Validate files and add to the view model
+         // TODO: Validate files and add to the view model
          if (files != null)
          {
             var context = GetWindowViewModel();

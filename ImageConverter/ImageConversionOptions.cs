@@ -29,5 +29,10 @@ namespace ImageConverterLib
       {
          return File.Exists(ImagePath);
       }
+
+      public override string ToString()
+      {
+         return $"Input: {ImagePath}, Output: {OutputImagePath}";
+      }
    }
 }
